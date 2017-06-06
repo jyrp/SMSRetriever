@@ -22,7 +22,7 @@ import android.widget.Toast;
 public class NumberFrag extends Fragment {
 
     EditText etNum;
-    Button btnRetrieveNum;
+    Button btnRetrieveNum,btnSend;
     TextView tvNum;
 
     @Override
@@ -32,6 +32,25 @@ public class NumberFrag extends Fragment {
         etNum = (EditText)view.findViewById(R.id.etNumber);
         btnRetrieveNum = (Button)view.findViewById(R.id.btnRetrieveNum);
         tvNum = (TextView)view.findViewById(R.id.tvNumber);
+        btnSend = (Button)view.findViewById(R.id.btnSend);
+
+
+        btnSend.setOnClickListener(new View.OnClickListener(){
+            @Override
+            public void onClick(View v){
+                int permissionCheck = PermissionChecker.checkSelfPermission
+                        (NumberFrag.this.getActivity(), Manifest.permission.SEND_SMS);
+
+                if (permissionCheck != PermissionChecker.PERMISSION_GRANTED){
+                    ActivityCompat.requestPermissions(NumberFrag.this.getActivity(),
+                            new String[]{Manifest.permission.SEND_SMS}, 0);
+
+
+                    return;
+                }
+
+            }
+        });
 
         btnRetrieveNum.setOnClickListener(new View.OnClickListener(){
             @Override
