@@ -21,11 +21,14 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import javax.xml.transform.stream.StreamResult;
+
 public class NumberFrag extends Fragment {
 
     EditText etNum;
     Button btnRetrieveNum,btnSend;
     TextView tvNum;
+    String strResult;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -57,17 +60,16 @@ public class NumberFrag extends Fragment {
 
 
                 emailIntent.putExtra(Intent.EXTRA_EMAIL, TO);
-                emailIntent.putExtra(Intent.EXTRA_SUBJECT, "Your subject");
-                emailIntent.putExtra(Intent.EXTRA_TEXT, "Email message goes here");
+                emailIntent.putExtra(Intent.EXTRA_SUBJECT, "P07");
+                emailIntent.putExtra(Intent.EXTRA_TEXT, strResult);
 
                 try {
                     startActivity(Intent.createChooser(emailIntent, "Send mail..."));
-                    Log.i("Finished sending email", "");
                     Toast.makeText(NumberFrag.this.getActivity(),
                             "Email sent.", Toast.LENGTH_SHORT).show();
                 } catch (android.content.ActivityNotFoundException ex) {
                     Toast.makeText(NumberFrag.this.getActivity(),
-                            "There is no email client installed.", Toast.LENGTH_SHORT).show();
+                            "Email failed to send", Toast.LENGTH_SHORT).show();
                 }
 
             }
@@ -127,6 +129,8 @@ public class NumberFrag extends Fragment {
                     } while (cursor.moveToNext());
                 }
                 tvNum.setText(smsBody);
+                strResult = smsBody;
+
             }
         });
 
