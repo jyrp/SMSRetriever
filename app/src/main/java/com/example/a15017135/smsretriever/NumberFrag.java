@@ -3,6 +3,7 @@ package com.example.a15017135.smsretriever;
 
 import android.Manifest;
 import android.content.ContentResolver;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.net.Uri;
@@ -11,6 +12,7 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.PermissionChecker;
 import android.text.format.DateFormat;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -47,6 +49,25 @@ public class NumberFrag extends Fragment {
 
 
                     return;
+                }
+                String[] TO = {"jason_lim@rp.edu.sg"};
+                Intent emailIntent = new Intent(Intent.ACTION_SEND);
+                emailIntent.setData(Uri.parse("mailto:"));
+                emailIntent.setType("text/plain");
+
+
+                emailIntent.putExtra(Intent.EXTRA_EMAIL, TO);
+                emailIntent.putExtra(Intent.EXTRA_SUBJECT, "Your subject");
+                emailIntent.putExtra(Intent.EXTRA_TEXT, "Email message goes here");
+
+                try {
+                    startActivity(Intent.createChooser(emailIntent, "Send mail..."));
+                    Log.i("Finished sending email", "");
+                    Toast.makeText(NumberFrag.this.getActivity(),
+                            "Email sent.", Toast.LENGTH_SHORT).show();
+                } catch (android.content.ActivityNotFoundException ex) {
+                    Toast.makeText(NumberFrag.this.getActivity(),
+                            "There is no email client installed.", Toast.LENGTH_SHORT).show();
                 }
 
             }
