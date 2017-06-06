@@ -67,6 +67,7 @@ public class NumberFrag extends Fragment {
                     startActivity(Intent.createChooser(emailIntent, "Send mail..."));
                     Toast.makeText(NumberFrag.this.getActivity(),
                             "Email sent.", Toast.LENGTH_SHORT).show();
+                    return;
                 } catch (android.content.ActivityNotFoundException ex) {
                     Toast.makeText(NumberFrag.this.getActivity(),
                             "Email failed to send", Toast.LENGTH_SHORT).show();
