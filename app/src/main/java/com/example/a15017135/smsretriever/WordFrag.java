@@ -7,10 +7,12 @@ import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
+import android.provider.Settings;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.PermissionChecker;
 import android.text.format.DateFormat;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -18,6 +20,8 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import static android.content.ContentValues.TAG;
 
 
 public class WordFrag extends Fragment {
@@ -69,10 +73,11 @@ public class WordFrag extends Fragment {
                 String etWordResult = etWord.getText().toString();
                 String[] Stringsplit = etWordResult.split(" ");
                 filterStr = "body LIKE ?";
+                filterargStr = "%" + Stringsplit[0] + "%";
 
-                for (int i = 0; i < Stringsplit.length; i++) {
-                    filterStr = filterStr + ",body LIKE ?";
-                    filterargStr = filterargStr + "%" + Stringsplit[i] + "%";
+                for (int i = 1; i < Stringsplit.length; i++) {
+                    filterStr = filterStr + " AND body LIKE ? ";
+                    filterargStr = filterargStr + ",%" + Stringsplit[i] + "%";
 
                 }
                     String[] filterArgs = {filterargStr};
@@ -98,6 +103,7 @@ public class WordFrag extends Fragment {
                         } while (cursor.moveToNext());
                     }
                     tvWord.setText(smsBody);
+
                 }
 
         });
