@@ -33,7 +33,6 @@ public class WordFrag extends Fragment {
     Button btnRetrieveWord;
     TextView tvWord;
     String filterStr;
-    String filterargArr;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -76,17 +75,15 @@ public class WordFrag extends Fragment {
                 String etWordResult = etWord.getText().toString();
                 String[] Stringsplit = etWordResult.split("\\s+");
                 filterStr = "body LIKE ?";
-                filterargArr = "%" + Stringsplit[0] + "%";
+               Stringsplit[0]  = ("%" + Stringsplit[0] + "%");
             if(Stringsplit.length > 0) {
              for (int i = 1; i < Stringsplit.length; i++) {
           filterStr = filterStr + " OR body LIKE ? ";
-            filterargArr = filterargArr + ",%" + Stringsplit[i] + "%";
-         Log.d(filterargArr,"abc");
+            Stringsplit[i] = (",%" + Stringsplit[i] + "%");
       }
 
     }
-                String[] filterArg = {filterargArr.toString()};
-                    Cursor cursor = cr.query(uri, reqCols, filterStr, filterArg, null);
+                    Cursor cursor = cr.query(uri, reqCols, filterStr, Stringsplit, null);
                     String smsBody = "";
 
                     if (cursor.moveToFirst()) {
