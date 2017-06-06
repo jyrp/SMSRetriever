@@ -21,6 +21,9 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.lang.reflect.Array;
+import java.util.ArrayList;
+
 import static android.content.ContentValues.TAG;
 
 
@@ -30,7 +33,7 @@ public class WordFrag extends Fragment {
     Button btnRetrieveWord;
     TextView tvWord;
     String filterStr;
-    String filterargStr;
+    String filterargArr;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -71,18 +74,19 @@ public class WordFrag extends Fragment {
 
                 // filtering matches for ?
                 String etWordResult = etWord.getText().toString();
-                String[] Stringsplit = etWordResult.split(" ");
+                String[] Stringsplit = etWordResult.split("\\s+");
                 filterStr = "body LIKE ?";
-                filterargStr = "%" + Stringsplit[0] + "%";
+                filterargArr = "%" + Stringsplit[0] + "%";
+            if(Stringsplit.length > 0) {
+             for (int i = 1; i < Stringsplit.length; i++) {
+          filterStr = filterStr + " OR body LIKE ? ";
+            filterargArr = filterargArr + ",%" + Stringsplit[i] + "%";
+         Log.d(filterargArr,"abc");
+      }
 
-                for (int i = 1; i < Stringsplit.length; i++) {
-                    filterStr = filterStr + " AND body LIKE ? ";
-                    filterargStr = filterargStr + ",%" + Stringsplit[i] + "%";
-
-                }
-                    String[] filterArgs = {filterargStr};
-                    // Fetch SMS Message from Built-in Content Provider
-                    Cursor cursor = cr.query(uri, reqCols, filterStr, filterArgs, null);
+    }
+                String[] filterArg = {filterargArr.toString()};
+                    Cursor cursor = cr.query(uri, reqCols, filterStr, filterArg, null);
                     String smsBody = "";
 
                     if (cursor.moveToFirst()) {
