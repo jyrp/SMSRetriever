@@ -60,7 +60,7 @@ public class WordFrag extends Fragment {
 
                 // Get Content Resolver object from which to
                 //  query the content provider
-                ContentResolver cr = getContentResolver();
+                ContentResolver cr = getActivity().getContentResolver();
                 //the filter string
                 String filter = "body LIKE ?";
                 // filtering matches for ?
