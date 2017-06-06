@@ -25,6 +25,8 @@ public class WordFrag extends Fragment {
     EditText etWord;
     Button btnRetrieveWord;
     TextView tvWord;
+    String filterStr;
+    String filterargStr;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -36,12 +38,12 @@ public class WordFrag extends Fragment {
 
         btnRetrieveWord.setOnClickListener(new View.OnClickListener(){
             @Override
-            public void onClick(View v){
+            public void onClick(View v) {
 
                 int permissionCheck = PermissionChecker.checkSelfPermission
                         (WordFrag.this.getActivity(), Manifest.permission.READ_SMS);
 
-                if (permissionCheck != PermissionChecker.PERMISSION_GRANTED){
+                if (permissionCheck != PermissionChecker.PERMISSION_GRANTED) {
                     ActivityCompat.requestPermissions(WordFrag.this.getActivity(),
                             new String[]{Manifest.permission.READ_SMS}, 0);
                     // stops the action from proceeding further as permission not
@@ -62,33 +64,42 @@ public class WordFrag extends Fragment {
                 //  query the content provider
                 ContentResolver cr = getActivity().getContentResolver();
                 //the filter string
-                String filter = "body LIKE ?";
+
                 // filtering matches for ?
                 String etWordResult = etWord.getText().toString();
-                String[] filterArgs = {"%" + etWordResult + "%"};
+                String[] Stringsplit = etWordResult.split(" ");
+                filterStr = "body LIKE ?";
 
-                // Fetch SMS Message from Built-in Content Provider
-                Cursor cursor = cr.query(uri, reqCols, filter, filterArgs, null);
-                String smsBody = "";
-                if (cursor.moveToFirst()) {
-                    do {
-                        long dateInMillis = cursor.getLong(0);
-                        String date = (String) DateFormat
-                                .format("dd MMM yyyy h:mm:ss aa", dateInMillis);
-                        String address = cursor.getString(1);
-                        String body = cursor.getString(2);
-                        String type = cursor.getString(3);
-                        if (type.equalsIgnoreCase("1")) {
-                            type = "Inbox:";
-                        } else {
-                            type = "Sent:";
-                        }
-                        smsBody += type + " " + address + "\n at " + date
-                                + "\n\"" + body + "\"\n\n";
-                    } while (cursor.moveToNext());
+                for (int i = 0; i < Stringsplit.length; i++) {
+                    filterStr = filterStr + ",body LIKE ?";
+                    filterargStr = filterargStr + "%" + Stringsplit[i] + "%";
+
                 }
-                tvWord.setText(smsBody);
-            }
+                    String[] filterArgs = {filterargStr};
+                    // Fetch SMS Message from Built-in Content Provider
+                    Cursor cursor = cr.query(uri, reqCols, filterStr, filterArgs, null);
+                    String smsBody = "";
+
+                    if (cursor.moveToFirst()) {
+                        do {
+                            long dateInMillis = cursor.getLong(0);
+                            String date = (String) DateFormat
+                                    .format("dd MMM yyyy h:mm:ss aa", dateInMillis);
+                            String address = cursor.getString(1);
+                            String body = cursor.getString(2);
+                            String type = cursor.getString(3);
+                            if (type.equalsIgnoreCase("1")) {
+                                type = "Inbox:";
+                            } else {
+                                type = "Sent:";
+                            }
+                            smsBody += type + " " + address + "\n at " + date
+                                    + "\n\"" + body + "\"\n\n";
+                        } while (cursor.moveToNext());
+                    }
+                    tvWord.setText(smsBody);
+                }
+
         });
 
         return view;
